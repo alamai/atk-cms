@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+	<body>
+      <ui:composition>
+      	<h:form>
+      	
+	      	<img src="http://bernardgoldberg.com/wp-content/uploads/graduation-cap.jpg" 
+	      	alt="bernardgoldberg.com" width="75" height="55"/>
+	      	
+	      	<p><b><h:link 
+	      		value="HOME" 
+	      		style="color:limegreen" 
+	      		outcome="/Student/LandingPage.xhtml"/>
+	   		</b></p>
+	   		
+		    <p><b><h:link 
+		    	value="Inbox" 
+		    	outcome="/Student/LandingPage.xhtml"/>
+		    </b></p>
+		    
+		   	<p><b><h:link
+	   			value="Announcements" 
+	   			outcome="/Student/LandingPage.xhtml"/>
+	   		</b></p>
+	   		
+		   	<b><h:commandLink 
+		   		value="LOG OUT"
+		   		style="color:crimson"
+		   		action="#{loginAccount.logout()}">
+		   	</h:commandLink></b>
+		   	
+	   	</h:form>
+      </ui:composition>	
+   	</body>
+</html>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context 
+    path="/ATK-CMS" 
+    reloadable="true">
+    
+    <!-- maxActive: Maximum number of database connections in pool. Make sure you
+         configure your mysqld max_connections large enough to handle
+         all of your db connections. Set to -1 for no limit -->
+
+    <!-- maxIdle: Maximum number of idle database connections to retain in pool.
+         Set to -1 for no limit. See also the DBCP documentation on this
+         and the minEvictableIdleTimeMillis configuration parameter -->
+
+    <!-- maxWait: Maximum time to wait for a database connection to become available
+         in ms, in this example 10 seconds. An Exception is thrown if
+         this timeout is exceeded. Set to -1 to wait indefinitely -->
+
+    <!-- username and password: MySQL username and password for database connections  -->
+
+    <!-- driverClassName: Class name for the old mm.mysql JDBC driver is
+         org.gjt.mm.mysql.Driver - we recommend using Connector/J though.
+         Class name for the official MySQL Connector/J driver is com.mysql.jdbc.Driver -->
+
+    <!-- url: The JDBC connection url for connecting to your MySQL database -->
+    
+    <!-- Database resource with connection attributes 
+         Abandoned connections returned to connection pool after 60-second-idle-time -->
+    
+    <!-- Resource factory for database connection pooling -->     
+    <Resource name="jdbc/poolDB"
+    	auth="Container"
+        driverClassName="com.mysql.jdbc.Driver"
+        type="javax.sql.DataSource"
+        factory="org.apache.tomcat.jdbc.pool.DataSourceFactory"
+        url="jdbc:mysql://localhost:3306/cms_db?autoReconnect=true"
+        username="cms_user"
+        password="sepi"
+        initialSize="20"
+        maxActive="500"
+       	maxIdle="100"
+       	maxWait="10000"
+       	logAbandoned="true"
+       	removeAbandoned="true"
+       	removeAbandonedTimeout="60"/>
+	
+	<Realm dataSourceName="jdbc/poolDB"
+	    localDataSource="true"
+	    className="org.apache.catalina.realm.DataSourceRealm"
+      	userTable="Users" 
+      	userRoleTable="UserRoles"
+      	userNameCol="username" 
+      	userCredCol="password"
+   		roleNameCol="rolename"/>
+    
+    <!-- Default set of monitored resources. If one of these changes, the web application will be reloaded -->
+    <WatchedResource>WEB-INF/web.xml</WatchedResource>
+    <WatchedResource>${catalina.base}/conf/web.xml</WatchedResource>
+	
+</Context>

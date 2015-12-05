@@ -1,0 +1,113 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <h:head>
+        <title>Edited Courses</title>
+    </h:head>
+    <h:body>
+    	<ui:composition template="/templates/common2-1.xhtml">
+    		<ui:define name="content">
+    			<h:form>
+    		
+			   		<p><b>Current courses</b></p>
+			   		
+			 		<h:dataTable
+			 			var="courses" 
+			 			border="1"
+			 			cellpadding="5"
+			 			style="text-align:left"
+			 			value="#{course.getCoursesFromCourses()}">
+			 			
+			    		<h:column>
+			    			<f:facet name="header">Course Name
+			    			</f:facet>#{courses.courseName}
+			    		</h:column>
+			    		
+			    		<h:column>
+			    			<f:facet name="header">Status
+			    			</f:facet>#{courses.courseStatus}
+			    		</h:column>
+			    		
+			    		<h:column>
+			    			<f:facet name="header">Course ID
+			    			</f:facet>#{courses.course_id}
+			    		</h:column>
+			    		
+			    	</h:dataTable>
+			    	
+		    	</h:form>
+    		</ui:define>
+    		
+    		<ui:define name="rightside">
+    			<h:form>
+    			
+	    			<p><b>Edit courses</b></p>
+	    			<p><font color="green">Course with ID "<b>#{schemas.getCourse_id()}</b>" updated !!!</font></p>
+					<p>Reference courses table on the left side when editing.</p>
+					<ul>
+						<li><p><u><font color="blue">Enter new information</font></u> for course fields that <u><font color="blue">need to be edited</font></u>.</p></li>
+		        		<li><p><u><font color="blue">Enter original information</font></u> for course fields that <u><font color="blue">do not need to be edited</font></u>.</p></li>
+	        			<li><p><u><font color="blue">Select one (1) Status</font></u> (true or false).</p></li>
+	        			<li><p><u><font color="blue">Select one (1) Course</font></u> (course ID and course name).</p></li>
+	        		</ul>
+	        		<br/>
+		
+					<h:panelGrid 
+						columns="3" 
+						cellpadding="10">
+					
+		            	<h:outputLabel 
+		            		style="font-weight:bold" 
+		            		value="Course Name:"/>
+		                <h:inputText 
+		                	id="coursename"
+		                	required="true"
+		                    requiredMessage="Course name is required"
+		                    validatorMessage="Course name must have 2-20 characters"
+		                    value="#{course.courseName}">
+		                    <f:validateLength minimum="2" maximum="20"/>
+		                </h:inputText>        
+		                <h:message for="coursename" style="color:red"/>
+		
+		                <h:outputLabel
+	                		style="font-weight:bold"
+        					value="Set Status:"/>       			
+        				<h:selectManyCheckbox
+        					id="status_select"
+        					style="border:1px solid lightgray"
+        					required="true"
+		                	requiredMessage="One (1) course status must be selected"
+        					value="#{course.selectStatus}">
+        					<f:selectItem id="true" itemValue="true" itemLabel="true"/>
+	   						<f:selectItem id="false" itemValue="false" itemLabel="false"/>
+						</h:selectManyCheckbox>
+        				<h:message for="status_select" style="color:red"/>
+		                
+		                <h:outputLabel 
+			            	style="font-weight:bold"
+			            	value="Select Course:"/>
+			            <h:selectManyCheckbox
+			                id="course_select"
+			                style="border:1px solid lightgray"
+			                layout="pageDirection"
+			                required="true"
+		                    requiredMessage="One (1) Course must be selected"
+			                value="#{course.selectCourse}">
+			                <f:selectItems value="#{course.courseidList}"/>
+			            </h:selectManyCheckbox>
+			            <h:message for="course_select" style="color:red"/>
+		                
+		            </h:panelGrid>
+		            <br/>
+		            <h:commandButton 
+		            	value="UPDATE" 
+		            	action="#{course.updateCourseProcess()}"/>
+    			
+    			</h:form>
+    		</ui:define>
+    	</ui:composition>
+    </h:body>
+</html>

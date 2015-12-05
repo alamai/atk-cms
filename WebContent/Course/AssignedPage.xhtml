@@ -1,0 +1,158 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <h:head>
+        <title>Course Assigned</title>
+    </h:head>
+    <h:body>
+    	<ui:composition template="/templates/common2-1.xhtml">
+    		<ui:define name="content">
+    			<h:form>
+    		
+			   		<p><b>Current Courses</b></p>
+			 		<h:dataTable
+			 			var="coursetable" 
+			 			border="1"
+			 			cellpadding="5"
+			 			style="text-align:left"
+			 			value="#{course.getCoursesFromCourses()}">
+			 			
+			    		<h:column>
+			    			<f:facet name="header">Course Name
+			    			</f:facet>#{coursetable.courseName}
+			    		</h:column>
+			    		
+			    		<h:column>
+			    			<f:facet name="header">Course ID
+			    			</f:facet>#{coursetable.course_id}
+			    		</h:column>
+			    		
+			    		<h:column>
+			    			<f:facet name="header">Course Status
+			    			</f:facet>#{coursetable.courseStatus}
+			    		</h:column>			    	
+			    	</h:dataTable>
+			    	<br/>
+			    	
+			    	<p><b>Instructor Courses</b></p>
+			 		<h:dataTable
+			 			var="instructortable" 
+			 			border="1"
+			 			cellpadding="5"
+			 			style="text-align:left"
+			 			value="#{course.getInstructorCourses()}">
+			 			
+			    		<h:column>
+			    			<f:facet name="header">User ID
+			    			</f:facet>#{instructortable.user_id}
+			    		</h:column>
+			    		
+			    		<h:column>
+			    			<f:facet name="header">Course ID
+			    			</f:facet>#{instructortable.course_id}
+			    		</h:column>
+			    		
+			    		<h:column>
+			    			<f:facet name="header">Assign Status
+			    			</f:facet>#{instructortable.assignStatus}
+			    		</h:column>
+			    	</h:dataTable>
+			    	<br/>
+			    	
+			    	<p><b>Student Courses</b></p>
+			 		<h:dataTable
+			 			var="studenttable" 
+			 			border="1"
+			 			cellpadding="5"
+			 			style="text-align:left"
+			 			value="#{course.getStudentCourses()}">
+			 			
+			    		<h:column>
+			    			<f:facet name="header">User ID
+			    			</f:facet>#{studenttable.user_id}
+			    		</h:column>
+			    		
+			    		<h:column>
+			    			<f:facet name="header">Course ID
+			    			</f:facet>#{studenttable.course_id}
+			    		</h:column>
+			    		
+			    		<h:column>
+			    			<f:facet name="header">Assign Status
+			    			</f:facet>#{studenttable.assignStatus}
+			    		</h:column>
+			    	</h:dataTable>
+			    	
+		    	</h:form>
+    		</ui:define>
+    		
+    		<ui:define name="rightside">
+    			<h:form>
+    			
+		    		<p><b>Assign Courses to Instructors and Students.</b></p>
+		    		<p><font color="green">Course with ID "<b>#{course.course_id}</b>" assigned !!!</font></p>
+					<p>Reference course tables on the left side when assigning courses.</p>
+					<ul>
+						<li><p><u><font color="blue">Choose one (1) Course</font></u> and <u><font color="blue">Enter</font></u> course ID of <u><font color="blue">active</font></u> course only.</p></li>
+	        			<li><p><u><font color="blue">Select one (1) Instructor</font></u> and <u><font color="blue"> 2 - 25 Students</font></u> only.</p></li>
+	        		</ul>
+		
+					<h:panelGrid 
+						columns="3" 
+						cellpadding="10">
+		                <h:outputLabel 
+			            	style="font-weight:bold"
+			            	value="Select Course:"/>
+			            <h:selectManyCheckbox
+			                id="course_select"
+			                style="border:1px solid lightgray"
+			                layout="pageDirection"
+			                required="true"
+		                    requiredMessage="One (1) Course must be selected"
+			                value="#{course.selectCourse}">
+			                <f:selectItems value="#{course.activeCoursesList}"/>
+			            </h:selectManyCheckbox>
+			            <h:message for="course_select" style="color:red"/>
+		                
+		                <h:outputLabel 
+			            	style="font-weight:bold"
+			            	value="Select Instructor:"/>
+			            <h:selectManyCheckbox
+			                id="instructor_select"
+			                style="border:1px solid lightgray"
+			                layout="pageDirection"
+			                required="true"
+		                    requiredMessage="One (1) Instructor must be selected"
+			                value="#{course.selectInstructor}">
+			                <f:selectItems value="#{course.instructorsList}"/>
+			            </h:selectManyCheckbox>
+			            <h:message for="instructor_select" style="color:red"/>
+						
+			            <h:outputLabel 
+			            	style="font-weight:bold" 
+			            	value="Select Students:"/>
+			            <h:selectManyCheckbox
+			                id="students_select"
+			                style="border:1px solid lightgray"
+			                layout="pageDirection"
+			                required="true"
+		                    requiredMessage="Students must be selected (from 2-25)"
+			                value="#{course.selectStudents}">
+			                <f:selectItems value="#{course.studentsList}"/>
+			            </h:selectManyCheckbox>
+			            <h:message for="students_select" style="color:red"/>
+		                
+		            </h:panelGrid>
+		            <br/>
+		            <h:commandButton 
+		            	value="SUBMIT" 
+		            	action="#{course.assignCourseProcess()}"/>
+    			
+    			</h:form>
+    		</ui:define>
+    	</ui:composition>
+    </h:body>
+</html>

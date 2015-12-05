@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"> 
+    <h:head>
+        <title>Instructor Upload Homework File</title>
+    </h:head>
+    <h:body>
+    	<ui:composition template="/templates/common1-1.xhtml">
+    		<ui:define name="content">
+		        <h:form enctype="multipart/form-data">
+		        	
+		        	<p><b>Upload Homework File</b></p>
+		            <br/>
+		            <h:panelGrid 
+						cellpadding="20">
+		                <h:inputFile 
+		                	value="#{instructorAccount.homeworkFile}">
+	                	</h:inputFile>
+	                	
+	                	<h:commandButton  
+	                		value="UPLOAD"
+	                		action="#{instructorAccount.uploadHomeworkFile()}">
+	                	</h:commandButton>
+                	</h:panelGrid>
+		            
+		        </h:form>
+			</ui:define>
+			
+			<ui:define name="rightside">
+    			<h:form>
+		    		<p><b><font color="red">Please follow these rules for homework files to be uploaded.</font></b></p>
+					<ul>
+	        			<li><p><u><font color="blue"><b>Write</b> the homework instructions in a document.</font></u></p></li>
+	        			<li><p><u><font color="blue"><b>Save</b> the document as <b>"doc"</b>, <b>"pdf"</b>, <b>"txt"</b>, or <b>"rtf"</b>.</font></u></p></li>
+	        			<li><p><u><font color="blue"><b>Upload</b> the created course homework in the <b>correct</b> course homework page.</font></u></p></li>
+	        			<li><p><u><font color="blue"><b>Publish</b> the homework after uploading to make it viewable to your students.</font></u></p></li>
+        				<li><p><u><font color="blue">Publish the homework at any time <b>before</b> the set homework expiry date.</font></u></p></li>
+	        		</ul>
+    			</h:form>
+    		</ui:define>
+			
+    	</ui:composition>
+    </h:body>
+</html>
+

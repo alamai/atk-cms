@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"> 
+    <h:head>
+        <title>User Login</title>
+    </h:head>
+    <h:body>
+    	<ui:composition template="templates/common3.xhtml">
+    		<ui:define name="content">
+        		<h:form>
+        		
+        			<h3>User Login</h3>
+        			<br/>
+        			<b><h:outputText 
+        				value="Username:"/></b>
+        			<br/>
+        			<h:inputText
+        				id="username"
+        				required="true"
+		                requiredMessage=" Username is required !!!"
+        				value="#{loginAccount.username}">
+       				</h:inputText>
+       				<h:message for="username" style="color:red"/>
+        			<br/>
+        			<br/>
+        			<br/>
+        			
+        			<b><h:outputText 
+        				value="Password:"/></b>
+        			<br/>
+        			<h:inputSecret 
+        				id="password"
+        				required="true"
+		                requiredMessage=" Password is required !!!"
+        				value="#{loginAccount.password}">
+       				</h:inputSecret>
+       				<h:message for="password" style="color:red"/>
+        			<br/>
+        			<br/>
+        			<br/>
+        			
+        			<b><h:outputText 
+        				value="Select Role:"/></b>
+        			<br/>
+        			<h:selectOneMenu 
+        				id="role"
+        				required="true"
+		                requiredMessage=" Role is required !!!"
+        				value="#{loginAccount.role}">
+        					<f:selectItem id="student" itemValue="student" itemLabel="Student"/>
+	   						<f:selectItem id="instructor" itemValue="instructor" itemLabel="Instructor"/>
+	   						<f:selectItem id="administrator" itemValue="administrator" itemLabel="Administrator"/>
+					</h:selectOneMenu>
+        			<h:message for="role" style="color:red"/>
+       				<br/>
+        			<br/>
+        			<br/>
+        			
+        			<h:commandButton 
+            			value="LOG IN"
+            			action="#{loginAccount.validateLogin()}"/>
+            			
+        		</h:form>
+        	</ui:define>
+    	</ui:composition>
+    </h:body>
+</html>

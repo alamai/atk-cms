@@ -1,0 +1,154 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <h:head>
+        <title>Reedited Accounts</title>
+    </h:head>
+    <h:body>
+    	<ui:composition template="/templates/common2-1.xhtml">
+    		<ui:define name="content">
+    			<h:form>
+    		
+			   		<p><b>Current user accounts</b></p>
+			   		
+			 		<h:dataTable
+			 			var="users" 
+			 			border="1"
+			 			cellpadding="4"
+			 			style="text-align:left"
+			 			value="#{manageAccount.getUsersFromUserAccounts()}">
+			 			
+			    		<h:column>
+			    			<f:facet name="header">First Name
+			    			</f:facet>#{users.firstName}
+			    		</h:column>
+			 
+			    		<h:column>
+			    			<f:facet name="header">Last Name
+			    			</f:facet>#{users.lastName}
+			    		</h:column>
+			 
+			 			<h:column>
+			    			<f:facet name="header">Email
+			    			</f:facet>#{users.email}
+			    		</h:column>
+			    		
+			    		<h:column>
+			    			<f:facet name="header">Status
+			    			</f:facet>#{users.accountStatus}
+			    		</h:column>
+			    		
+			    		<h:column>
+			    			<f:facet name="header">Role
+			    			</f:facet>#{users.role}
+			    		</h:column>
+			    		
+			    		<h:column>
+			    			<f:facet name="header">User ID
+			    			</f:facet>#{users.user_id}
+			    		</h:column>
+			    		
+			    	</h:dataTable>
+			    	
+		    	</h:form>
+    		</ui:define>
+    		
+    		<ui:define name="rightside">
+    			<h:form>
+    			
+	    			<p><b>Edit user accounts</b></p>
+	    			<p><font color="red">Account could NOT be updated !!!<br/>
+	    			Please carefully reenter user information according to the rules below.</font></p>
+					<p>Reference user accounts table on the left side when editing.</p>
+					<ul>
+						<li><p><u><font color="blue">Enter new information</font></u> for account fields that <u><font color="blue">need to be edited</font></u>.</p></li>
+		        		<li><p><u><font color="blue">Enter original information</font></u> for account fields that <u><font color="blue">do not need to be edited</font></u>.</p></li>
+	        			<li><p><u><font color="blue">Select one (1) Status</font></u> (true or false).</p></li>
+	        			<li><p><u><font color="blue">Select one (1) User</font></u> (user ID and username).</p></li>
+	        		</ul>
+	        		<br/>
+		
+					<h:panelGrid 
+						columns="3" 
+						cellpadding="10">
+		            	<h:outputLabel 
+		            		style="font-weight:bold" 
+		            		value="First Name:"/>
+		                <h:inputText 
+		                	id="firstname"
+		                	required="true"
+		                    requiredMessage="First name is required"
+		                    validatorMessage="First name must have 2-20 characters"
+		                    value="#{manageAccount.firstName}">
+		                    <f:validateLength minimum="2" maximum="20"/>
+		                </h:inputText>        
+		                <h:message for="firstname" style="color:red"/>
+		
+		                <h:outputLabel 
+		                	style="font-weight:bold" 
+		                	value="Last Name:"/>
+		                <h:inputText 
+		                	id="lastname"
+		                	required="true"
+		                    requiredMessage="Last name is required"
+		                    validatorMessage="Last name must have 2-20 characters"
+		                    value="#{manageAccount.lastName}">
+		                    <f:validateLength minimum="2" maximum="20"/>
+		                </h:inputText>        
+		                <h:message for="lastname" style="color:red"/>
+		                
+		                <h:outputLabel 
+		                	style="font-weight:bold" 
+		                	value="Email:"/>
+		                <h:inputText 
+		                	id="email"
+		                	required="true"
+				            requiredMessage="Email is required"
+		                    validatorMessage="Email must have 3-20 characters (with '@')"
+		                    value="#{manageAccount.email}">
+		                    <f:validateLength minimum="3" maximum="20"/>
+		                </h:inputText>        
+		                <h:message for="email" style="color:red"/>
+		                
+		                <h:outputLabel
+	                		style="font-weight:bold"
+        					value="Set Status:"/>       			
+        				<h:selectManyCheckbox
+        					id="status_select"
+        					style="border:1px solid lightgray"
+        					required="true"
+		                	requiredMessage="One (1) account status must be selected"
+        					value="#{manageAccount.selectStatus}">
+        					<f:selectItem id="true" itemValue="true" itemLabel="true"/>
+	   						<f:selectItem id="false" itemValue="false" itemLabel="false"/>
+						</h:selectManyCheckbox>
+        				<h:message for="status_select" style="color:red"/>
+		                
+		                <h:outputLabel 
+			            	style="font-weight:bold"
+			            	value="Select Account:"/>
+			            <h:selectManyCheckbox
+			                id="account_select"
+			                style="border:1px solid lightgray"
+			                layout="pageDirection"
+			                required="true"
+		                    requiredMessage="One (1) Account must be selected"
+			                value="#{manageAccount.selectAccount}">
+			                <f:selectItems value="#{manageAccount.useridList}"/>
+			            </h:selectManyCheckbox>
+			            <h:message for="account_select" style="color:red"/>
+		                
+		            </h:panelGrid>
+		            <br/>
+		            <h:commandButton 
+		            	value="UPDATE" 
+		            	action="#{manageAccount.updateAccountProcess()}"/>
+    			
+    			</h:form>
+    		</ui:define>
+    	</ui:composition>
+    </h:body>
+</html>

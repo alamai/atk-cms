@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"> 
+    <h:head>
+        <title>Course Creation</title>
+    </h:head>
+    <h:body>
+    	<ui:composition template="/templates/common2-1.xhtml">
+    		<ui:define name="content">
+		        <h:form>
+		        
+		        	<p><b>Add new course</b></p>
+		        	
+		            <h:panelGrid 
+		            	columns="3" 
+		            	cellpadding="10">
+		            
+		            	<h:outputLabel 
+		            		style="font-weight:bold" 
+		            		value="Course Name:"/>
+		                <h:inputText 
+		                	id="coursename"
+		                	required="true"
+		                    requiredMessage="Course name is required"
+		                    validatorMessage="Course name must have 2-20 characters"
+		                    value="#{course.courseName}">
+		                    <f:validateLength minimum="2" maximum="20"/>
+		                </h:inputText>        
+		                <h:message for="coursename" style="color:red"/>
+		                
+		                <h:outputLabel 
+		                	style="font-weight:bold" 
+		                	value="Confirm Course Name:"/>
+		                <h:inputText 
+		                	id="confirmcoursename" required="true"
+		                    requiredMessage="Course name is required"
+		                    validatorMessage="Course name must have 2-20 characters"
+		                    value="#{course.confirmCourseName}">
+		                    <f:validateLength minimum="2" maximum="20"/>
+		                </h:inputText>        
+		                <h:message for="confirmcoursename" style="color:red"/>
+		
+		                <h:outputLabel 
+		                	style="font-weight:bold" 
+		                	value="Course Status:"/>
+		                <h:inputText 
+		                	id="coursestatus" 
+		                	required="true"
+		                    requiredMessage="Course status is required"
+		                    validatorMessage="Course status must have 4-5 characters (true or false)"
+		                    value="#{course.courseStatus}">
+		                    <f:validateLength minimum="4" maximum="5"/>
+		                </h:inputText>        
+		                <h:message for="coursestatus" style="color:red"/>
+		                
+		            </h:panelGrid>
+		            <br/>
+		            <h:commandButton 
+		            	value="SUBMIT" 
+		            	action="#{course.courseCreationProcess()}"/>
+		            	
+		        </h:form>
+			</ui:define>
+			
+			<ui:define name="rightside">
+    			<h:form>
+		    		<p><b><font color="red">Please follow this rule when creating courses.</font></b></p>
+					<ul>
+						<li><p><u><font color="blue">Course status must be entered as <b>true.</b></font></u></p></li>
+	        		</ul>
+    			</h:form>
+    		</ui:define>
+			
+    	</ui:composition>
+    </h:body>
+</html>
+

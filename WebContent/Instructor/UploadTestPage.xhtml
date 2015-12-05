@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"> 
+    <h:head>
+        <title>Instructor Upload Test File</title>
+    </h:head>
+    <h:body>
+    	<ui:composition template="/templates/common1-1.xhtml">
+    		<ui:define name="content">
+		        <h:form enctype="multipart/form-data">
+		        	
+		        	<p><b>Upload Test File</b></p>
+		            <br/>
+		            <h:panelGrid 
+						cellpadding="20">
+		                <h:inputFile 
+		                	value="#{instructorAccount.testFile}">
+	                	</h:inputFile>
+	                	
+	                	<h:commandButton  
+	                		value="UPLOAD"
+	                		action="#{instructorAccount.uploadTestFile()}">
+	                	</h:commandButton>
+                	</h:panelGrid>
+		            
+		        </h:form>
+			</ui:define>
+			
+			<ui:define name="rightside">
+    			<h:form>
+		    		<p><b><font color="red">Please follow these rules for test files to be uploaded.</font></b></p>
+					<ul>
+						<li><p><u><font color="blue">Go to <b>Tests Template</b> to download a test template(XML file).</font></u></p></li>
+	        			<li><p><u><font color="blue"><b>Follow</b> the instructions in the test template to create the course test.</font></u></p></li>
+	        			<li><p><u><font color="blue"><b>Upload</b> the created course test in the <b>correct</b> course test page.</font></u></p></li>
+	        			<li><p><u><font color="blue"><b>Publish</b> the test after uploading to make it viewable to your students.</font></u></p></li>
+        				<li><p><u><font color="blue">Publish the test at any time <b>before</b> the set test expiry date.</font></u></p></li>
+	        		</ul>
+    			</h:form>
+    		</ui:define>
+			
+    	</ui:composition>
+    </h:body>
+</html>
+

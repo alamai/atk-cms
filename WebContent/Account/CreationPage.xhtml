@@ -1,0 +1,157 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"> 
+    <h:head>
+        <title>Account Creation</title>
+    </h:head>
+    <h:body>
+    	<ui:composition template="/templates/common2-1.xhtml">
+    		<ui:define name="content">
+		        <h:form>
+		        
+		        	<p><b>Add new account</b></p>
+		        	
+		            <h:panelGrid 
+		            	columns="3" 
+		            	cellpadding="10">
+		            
+		            	<h:outputLabel 
+		            		style="font-weight:bold" 
+		            		value="First Name:"/>
+		                <h:inputText 
+		                	id="firstname" 
+		                	required="true"
+		                    requiredMessage="First name is required"
+		                    validatorMessage="First name must have 2-20 characters"
+		                    value="#{manageAccount.firstName}">
+		                    <f:validateLength minimum="2" maximum="20"/>
+		                </h:inputText>        
+		                <h:message for="firstname" style="color:red"/>
+		
+		                <h:outputLabel 
+		                	style="font-weight:bold" 
+		                	value="Last Name:"/>
+		                <h:inputText 
+		                	id="lastname" 
+		                	required="true"
+		                    requiredMessage="Last name is required"
+		                    validatorMessage="Last name must have 2-20 characters"
+		                    value="#{manageAccount.lastName}">
+		                    <f:validateLength minimum="2" maximum="20"/>
+		                </h:inputText>        
+		                <h:message for="lastname" style="color:red"/>
+		                
+		                <h:outputLabel 
+		                	style="font-weight:bold" 
+		                	value="Email:"/>
+		                <h:inputText 
+		                	id="email"
+		                	required="true"
+		                    requiredMessage="Email is required"
+		                    validatorMessage="Email must have 3-20 characters (with '@')"
+		                    value="#{manageAccount.email}">
+		                    <f:validateLength minimum="3" maximum="20"/>
+		                </h:inputText>        
+		                <h:message for="email" style="color:red"/>
+		                
+		                <h:outputLabel 
+		                	style="font-weight:bold" 
+		                	value="Account Status:"/>
+		                <h:inputText 
+		                	id="accountstatus" 
+		                	required="true"
+		                    requiredMessage="Account status is required"
+		                    validatorMessage="Account status must have 4-5 characters (true or false)"
+		                    value="#{manageAccount.accountStatus}">
+		                    <f:validateLength minimum="4" maximum="5"/>
+		                </h:inputText>        
+		                <h:message for="accountstatus" style="color:red"/>
+		            
+		                <h:outputLabel 
+		                	style="font-weight:bold" 
+		                	value="Username:"/>
+		                <h:inputText 
+		                	id="username" required="true"
+		                    requiredMessage="Username is required"
+		                    validatorMessage="Username must have 4-20 characters"
+		                    value="#{manageAccount.username}">
+		                    <f:validateLength minimum="4" maximum="20"/>
+		                </h:inputText>        
+		                <h:message for="username" style="color:red"/>
+		
+		                <h:outputLabel 
+		                	style="font-weight:bold" 
+		                	value="Confirm Username:"/>
+		                <h:inputText 
+		                	id="confirmusername" required="true"
+		                    requiredMessage="Username is required"
+		                    validatorMessage="Username must have 4-20 characters"
+		                    value="#{manageAccount.confirmUsername}">
+		                    <f:validateLength minimum="4" maximum="20"/>
+		                </h:inputText>        
+		                <h:message for="confirmusername" style="color:red"/>
+		
+		                <h:outputLabel 
+		                	style="font-weight:bold" 
+		                	value="Password:"/>
+		                <h:inputText 
+		                	id="password" 
+		                	required="true"
+		                    requiredMessage="Password is required"
+		                    validatorMessage="Password must have 4-20 characters"
+		                    value="#{manageAccount.password}">
+		                    <f:validateLength minimum="4" maximum="20"/>
+		                </h:inputText>        
+		                <h:message for="password" style="color:red"/>
+		
+		                <h:outputLabel 
+		                	style="font-weight:bold" 
+		                	value="Confirm Password:"/>
+		                <h:inputText 
+		                	id="confirmpassword" 
+		                	required="true"
+		                    requiredMessage="Password is required"
+		                    validatorMessage="Password must have 4-20 characters"
+		                    value="#{manageAccount.confirmPassword}">
+		                    <f:validateLength minimum="4" maximum="20"/>
+		                </h:inputText>        
+		                <h:message for="confirmpassword" style="color:red"/>
+		                                
+		                <h:outputLabel 
+		                	style="font-weight:bold" 
+		                	value="Role:"/>
+		                <h:inputText 
+		                	id="role" 
+		                	required="true"
+		                    requiredMessage="Role is required"
+		                    validatorMessage="Role must have 7 to 10 characters"
+		                    value="#{manageAccount.role}">
+		                    <f:validateLength minimum="7" maximum="10"/>
+		                </h:inputText>        
+		                <h:message for="role" style="color:red"/>
+		                
+		            </h:panelGrid>
+		            <br/>
+		            <h:commandButton 
+		            	value="SUBMIT" 
+		            	action="#{manageAccount.registrationProcess()}"/>
+		            	
+		        </h:form>
+			</ui:define>
+			
+			<ui:define name="rightside">
+    			<h:form>
+		    		<p><b><font color="red">Please follow these rules when creating accounts.</font></b></p>
+					<ul>
+						<li><p><u><font color="blue">Account status must be entered as <b>true.</b></font></u></p></li>
+	        			<li><p><u><font color="blue">Role must be entered as <b>instructor</b> or <b>student.</b></font></u></p></li>
+	        		</ul>
+    			</h:form>
+    		</ui:define>
+    	</ui:composition>
+    </h:body>
+</html>
+

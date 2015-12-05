@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <h:head>
+        <title>Administrator Landing</title>
+    </h:head>
+    <h:body>
+    	<ui:composition template="/templates/common2.xhtml">
+    		<ui:define name="content">
+		    	<h:form>
+		    	
+		    		<p>Welcome #{schemas.getFirstName()} #{schemas.getLastName()}</p>
+		            <br/>
+		            
+		            <h:commandLink 
+		            	id="createAccountLink" 
+		            	action="/Account/CreationPage.xhtml">
+		                <b><h:outputText value="Create Account"/></b>
+		            </h:commandLink>
+		            <br/>
+		            <br/>
+		            <br/>
+		            
+		            <h:commandLink 
+		            	id="courseLink"
+		            	action="/Course/CreationPage.xhtml">
+		                <b><h:outputText value="Create Course"/></b>
+		            </h:commandLink>
+		            <br/>
+		            <br/>
+		            <br/>
+		            
+		            <h:commandLink 
+		            	id="courseAssignLink"
+		            	action="/Course/AssignPage.xhtml">
+		                <b><h:outputText value="Assign Course"/></b>
+		            </h:commandLink>
+		            
+		        </h:form>
+	        </ui:define>
+    	</ui:composition>
+    </h:body>
+</html>
+

@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <h:head>
+        <title>Message Compose</title>
+    </h:head>
+    <h:body>
+    	<ui:composition template="/templates/common1.xhtml">
+    		<ui:define name="content">
+		    	<h:form>
+					<h:panelGrid columns="2">
+						
+						<p>To:</p>
+                		<h:panelGroup>
+                    	<h:inputText 
+                    		size="15"
+                    		id="name"
+                    		value="#{mailClient.recipient}"
+                            required="true"
+                            requiredMessage="Required"/>
+                   		<h:message for="name" style="color:red"/>
+                		</h:panelGroup>
+                
+                		<p>Subject:</p>
+                		<h:panelGroup>
+                    	<h:inputText 
+                    		size="30" 
+                    		id="subject"
+                            value="#{mailClient.subject}"
+                            required="true"
+                            requiredMessage="Required"/>
+                    	<h:message for="subject" style="color:red"/>
+                		</h:panelGroup>
+                
+                		<p>Message:</p>
+                		<h:panelGroup>
+                    	<h:inputTextarea 
+                    		cols="45" 
+                    		rows="15" 
+                    		id="message"
+                            value="#{mailClient.message}"
+                            required="true"
+                            requiredMessage="Required"/>
+                    	<h:message for="message" style="color:red"/>
+                		</h:panelGroup>
+                
+                		<h:commandButton 
+                			value="Send" 
+                			action="#{mailClient.send()}"/>
+                		<h:outputText 
+                			value="#{mailClient.statusMessage}" 
+                			style="color:red"/>
+                		
+		        	</h:panelGrid>
+		        </h:form>
+	        </ui:define>
+    	</ui:composition>
+    </h:body>
+</html>
+
