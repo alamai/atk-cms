@@ -34,7 +34,7 @@ public class ManageAccount {
 	private ArrayList<String> useridList;
 
 	public ManageAccount() throws SQLException {
-		getUserAccounts();
+		userAccounts();
 	}
 	
 	public int getUser_id() {
@@ -144,10 +144,10 @@ public class ManageAccount {
 
 	/**
 	 * Get list of Users from UserAccounts 
-	 * @return 
+	 * @return usersList
 	 * @throws SQLException
 	 */
-	public List<Account> getUsersFromUserAccounts() throws SQLException {
+	public List<Account> usersFromUserAccounts() throws SQLException {
 	
 		ConnectionPool pool = ConnectionPool.getInstance();
 		Connection connection = pool.getConnection();
@@ -181,10 +181,10 @@ public class ManageAccount {
 		return usersList;
 	}
 	
-	private ArrayList<String> getUserAccounts() throws SQLException {
+	private ArrayList<String> userAccounts() throws SQLException {
 		
 		String sql = "select user_id, username from UserAccounts order by user_id";
-		return useridList = DatabaseSchemas.getIdListFromTable(sql, useridList);
+		return useridList = DatabaseSchemas.idListFromTable(sql, useridList);
 	}
 	
 	/**

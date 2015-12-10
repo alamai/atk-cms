@@ -8,21 +8,21 @@
         <title>Validation Error</title>
     </h:head>
     <h:body>
-    	<ui:composition template="templates/common3.xhtml">
+    	<ui:composition template="/templates/common3.xhtml">
     		<ui:define name="content">
         		<h:form>
         		
 	        		<p>Login failed !!! Please reenter your login credentials.</p>
 	        		<p>If login fails again:</p>
 	        		<ul>
-	        			<li><p>Instructors and Students --- contact the system Administrator for support.</p></li>
-	        			<li><p>Administrator --- contact the system vendor for support.</p></li>
+	        			<li><p>Instructors and Students - contact the system Administrator for support.</p></li>
+	        			<li><p>Administrator - contact the system vendor for support.</p></li>
         			</ul>
             		<br/>
             		
             		<h:commandLink 
             			id="back" 
-            			action="LoginPage">
+            			action="/LoginPage.xhtml">
                 		<b><h:outputText 
                 			value="BACK TO LOGIN"/></b>
             		</h:commandLink>

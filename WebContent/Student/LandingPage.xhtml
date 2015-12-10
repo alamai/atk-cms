@@ -12,9 +12,9 @@
     		<ui:define name="content">
 		    	<h:form>
 		    	
-		    		<p>Welcome #{schemas.getFirstName()} #{schemas.getLastName()}</p>
+		    		<p>Welcome <b>#{schemas.getFirstName()} #{schemas.getLastName()}</b></p>
+		    		<p><b>Select Course from drop-down menu and submit.</b></p>
 		            <br/>
-		            
 		            <h:commandLink 
 		            	id="viewStudentCoursesLink" 
 		            	action="CoursePage.xhtml">

@@ -4,17 +4,16 @@ import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.io.File;
-import java.io.IOException;
 import java.io.Serializable;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.URISyntaxException;
 import org.w3c.dom.Node;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -26,36 +25,35 @@ import javax.xml.parsers.ParserConfigurationException;
  * questionList stores list of Questions
  */
 @ManagedBean(name="questions")
-@SessionScoped
 public class Questions implements Serializable {
-
-	protected int currentQuestion = 0;
-			
+	
+	private int currentQuestion = 0;
+		
 	// List for questions from XML file 
-	protected ArrayList<Question> questionsList = new ArrayList<Question>(10);
+	public ArrayList<Question> questionsList = new ArrayList<Question>(10);
 
 	// List for Student's selected answers 
-	protected Map<Integer, Integer> selections = new LinkedHashMap<Integer, Integer>();
+	public Map<Integer, Integer> selections = new LinkedHashMap<Integer, Integer>();
 
 	private final String testsPath = System.getProperty("user.home") + File.separator + "Desktop" + File.separator 
 			+ "CMSFiles" + File.separator + "AssignedTests" + File.separator + "java-test.xml";
-	
-	private static final long serialVersionUID = 1L;
 
-	public int getCurrentQuestion() { 
+	private static final long serialVersionUID = 1L;
+	
+	public void setCurrentQuestion(int currentQuestion) {
+		this.currentQuestion = currentQuestion;
+	}
+	
+	public int getCurrentQuestion() {
 		return currentQuestion;
 	}
-	
-	public void resetCurrentQuestion() { 
-		currentQuestion = 0;
-	}
-	
+
 	public ArrayList<Question> getQuestionsList() { 
-		return this.questionsList;
+		return questionsList;
 	}
 
 	public Map<Integer, Integer> getSelections() {
-		return this.selections;
+		return selections;
 	}
 
 	public Questions() {
@@ -115,15 +113,12 @@ public class Questions implements Serializable {
 		}
 		System.out.println("Correct answer index : " + correct);
 		
-		Wizard wiz = new Wizard();
-		System.out.println("Button ID is: " + wiz.getButton_id());
-		
 		Question qn = new Question();
-		qn.setQuestionNumber(number);
 		qn.setQuestion(question);
+		qn.setQuestionNumber(number);
 		qn.setQuestionChoices(choices);
 		qn.setCorrectChoiceIndex(correct);
-		questionsList.add(number, qn);
+		questionsList.add(qn);
 	}
 
 	/**

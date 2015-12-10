@@ -13,7 +13,7 @@
 		    	<h:form>
 		            <br/>
 		            
-		            <h:commandLink 
+		            <h:commandLink
 		            	id="uploadTestLink"
 		            	action="/Instructor/UploadTestPage.xhtml">
 		                <b><h:outputText value="Upload Test"/></b>
@@ -22,14 +22,51 @@
 		            <br/>
 		            <br/>
 		            
-		            <h:commandLink 
+		            <h:commandLink
 		            	id="uploadHomeworkLink" 
 		            	action="/Instructor/UploadHomeworkPage.xhtml">
 		                <b><h:outputText value="Upload Homework"/></b>
 		            </h:commandLink>
 		            <br/>
+		            <br/>		            
 		            <br/>
-		            <br/>
+		            <h:outputText 
+		            	style="color:blue; font-weight:bold"
+		            	value="Assign Homework Grades: "/>
+        			<h:selectOneMenu 
+        				value="#{instructorAccount.selectedStudent}"
+        				valueChangeListener="#{instructorAccount.instructorSelectedStudent}">
+        				<f:selectItem itemValue="studentlist" itemLabel="Select Student"/>
+        				<f:selectItems value="#{instructorAccount.instructorStudentsList}"/>
+					</h:selectOneMenu>
+					&nbsp;
+					<h:commandButton value="SUBMIT" action="#{instructorAccount.assignGradesPage()}" />
+       				<br/>
+        			<br/>
+        			
+		            <p><b>Students Assigned to #{instructorAccount.selectedCourse}</b></p>
+			 		<h:dataTable
+			 			var="studentstable" 
+			 			border="1"
+			 			cellpadding="5"
+			 			style="text-align:left"
+			 			value="#{instructorAccount.instructorStudentsTable()}">
+			 			
+			    		<h:column>
+			    			<f:facet name="header">First Name
+			    			</f:facet>#{studentstable.firstName}
+			    		</h:column>
+			    		
+			    		<h:column>
+			    			<f:facet name="header">Last Name
+			    			</f:facet>#{studentstable.lastName}
+			    		</h:column>
+			    		
+			    		<h:column>
+			    			<f:facet name="header">User ID
+			    			</f:facet>#{studentstable.user_id}
+			    		</h:column>
+			    	</h:dataTable>
 		            
 		        </h:form>
 	        </ui:define>

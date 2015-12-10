@@ -1,10 +1,7 @@
 package atk.cms.tests;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
 
 /**
  * Represents a SINGLE Question with: 
@@ -14,24 +11,23 @@ import javax.faces.bean.SessionScoped;
  * (4) Correct choice index
  */
 @ManagedBean(name="question")
-@SessionScoped
 public class Question implements Serializable {
 
-	private ArrayList<String> answers = new ArrayList<String>(10);
+	private String answer;
 	private boolean answered = false;
 	private String question;
-	private int questionNumber;
+	private int questionNumber = 0;
 	private String[] questionChoices;
 	private int correctChoiceIndex;
 	private static final long serialVersionUID = 1L;
-	
-	public void setAnswers(ArrayList<String> answers) {
-		this.answers = answers;
+
+	public void setAnswer(String answer) {
+		this.answer = answer;
 		answered = true;
 	}
-	
-	public ArrayList<String> getAnswers() {
-		return answers;
+
+	public String getAnswer() { 
+		return answer;   
 	}
 
 	public void setAnswered(boolean answered) { 
@@ -50,10 +46,12 @@ public class Question implements Serializable {
 		return question; 
 	}
 	
-	public void setQuestionNumber(int questionNumber) {
-		this.questionNumber = questionNumber;
+	// Set Question i when user clicks next or previous
+	public void setQuestionNumber(int i) {
+		questionNumber = i;
 	}
-	
+
+	// Get Question i from XML file
 	public int getQuestionNumber() {
 		return questionNumber;
 	}

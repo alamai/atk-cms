@@ -5,11 +5,13 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.sql.PreparedStatement;
 import java.sql.DatabaseMetaData;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import java.security.NoSuchAlgorithmException;
+import atk.cms.accounts.Account;
 import atk.cms.database.ConnectionPool;
 import atk.cms.database.DatabaseUtility;
 import atk.cms.database.PasswordUtility;
@@ -18,9 +20,10 @@ import atk.cms.database.PasswordUtility;
 @SessionScoped
 
 public class DatabaseSchemas {
-	
+
 	private static int user_id;
 	private static int course_id;
+	private static boolean courseStatus;
 	private static String firstName;
 	private static String lastName;
 	private static String email;
@@ -39,6 +42,14 @@ public class DatabaseSchemas {
 
 	public static int getCourse_id() {
 		return course_id;
+	}
+	
+	public static void setCourseStatus(boolean courseStatus) {
+		DatabaseSchemas.courseStatus = courseStatus;
+	}
+
+	public static boolean isCourseStatus() {
+		return courseStatus;
 	}
 
 	public static void setFirstName(String firstName) {
@@ -167,7 +178,7 @@ public class DatabaseSchemas {
 			rs = pstmt.executeQuery();
 
 			if (rs.next()) {
-				InitializeAccount(rs);
+				initializeAccount(rs);
 				ret = true;
 			}
 
@@ -312,7 +323,7 @@ public class DatabaseSchemas {
 		return ret;
 	}
 
-	private static void InitializeAccount(ResultSet rs) {
+	private static void initializeAccount(ResultSet rs) {
 		
 		try {
 			user_id = rs.getInt(1);
@@ -329,7 +340,7 @@ public class DatabaseSchemas {
 	 * @return idList
 	 * @throws SQLException
 	 */
-	public static ArrayList<String> getIdListFromTable(String sql, ArrayList<String> idList) throws SQLException {
+	public static ArrayList<String> idListFromTable(String sql, ArrayList<String> idList) throws SQLException {
 
 		ConnectionPool pool = ConnectionPool.getInstance();
 		Connection connection = pool.getConnection();
@@ -355,11 +366,82 @@ public class DatabaseSchemas {
 	}
 	
 	/**
-	 * Get Courses Instructor is assigned to teach
-	 * @return userCoursesList
+	 * Get Students an Instructor is assigned to teach
+	 * @return studentsIdList
 	 * @throws SQLException 
 	 */
-	public static ArrayList<String> getUserCoursesInfo(String sqljoin, int user_id, 
+	public static ArrayList<Integer> studentsIdListFromCourses(String sqljoin, int user_id, String courseName, 
+			ArrayList<Integer> studentsIdList) throws SQLException {
+	
+		ConnectionPool pool = ConnectionPool.getInstance();
+		Connection connection = pool.getConnection();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+	
+		try {
+			pstmt = connection.prepareStatement(sqljoin);
+			pstmt.setInt(1, user_id);
+			pstmt.setString(2, courseName);
+			rs = pstmt.executeQuery();
+			studentsIdList = new ArrayList<Integer>();
+	
+			while (rs.next()) {
+				studentsIdList.add(rs.getInt(1));
+			}
+		} catch (SQLException e) {
+			System.out.println(e);
+		} finally {			
+			DatabaseUtility.closePreparedStatement(pstmt);
+			DatabaseUtility.closeResultSet(rs);
+			pool.freeConnection(connection);
+		}
+		return studentsIdList;
+	}
+
+	/**
+	 * Get list of Students taking course and display in table
+	 * @return studentsAccountsTable
+	 * @throws SQLException
+	 */
+	public static List<Account> studentsInCourse(String sqljoin, int user_id, String courseName, 
+			List<Account> studentsAccountsTable) throws SQLException {
+	
+		ConnectionPool pool = ConnectionPool.getInstance();
+		Connection connection = pool.getConnection();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		Account account = null;
+	
+		try {
+			pstmt = connection.prepareStatement(sqljoin);
+			pstmt.setInt(1, user_id);
+			pstmt.setString(2, courseName);
+			rs = pstmt.executeQuery();
+			studentsAccountsTable = new ArrayList<Account>();
+	
+			while (rs.next()) {
+				account = new Account();
+				account.setFirstName(rs.getString("firstname"));
+				account.setLastName(rs.getString("lastname"));
+				account.setUser_id(rs.getInt("user_id"));
+				studentsAccountsTable.add(account);
+			}
+		} catch (SQLException e) {
+			System.out.println(e);
+		} finally {			
+			DatabaseUtility.closePreparedStatement(pstmt);
+			DatabaseUtility.closeResultSet(rs);
+			pool.freeConnection(connection);
+		}
+		return studentsAccountsTable;
+	}
+
+	/**
+	 * Get Courses Instructor is assigned to teach
+	 * @return userCoursesInfoList
+	 * @throws SQLException 
+	 */
+	public static ArrayList<String> userCoursesInfo(String sqljoin, int user_id, 
 			ArrayList<String> userCoursesInfoList) throws SQLException {
 
 		ConnectionPool pool = ConnectionPool.getInstance();
@@ -385,7 +467,7 @@ public class DatabaseSchemas {
 		}
 		return userCoursesInfoList;
 	}
-
+	
 	/**
 	 * Add User (Instructor or Student) into UserAccounts
 	 * @return Number of affected rows
@@ -414,31 +496,6 @@ public class DatabaseSchemas {
 			System.out.println(e);
 			return 0;
 		} catch (NoSuchAlgorithmException e) {
-			System.out.println(e);
-			return 0;
-		} finally { 
-			DatabaseUtility.closePreparedStatement(pstmt);
-			pool.freeConnection(connection);
-		}
-	}
-	
-	/**
-	 * Add Student to Gradebook
-	 * @return Number of affected rows
-	 * @throws SQLException
-	 */
-	public static int insertUserIntoGradebook(String sql, String username, String role) throws SQLException {
-
-		ConnectionPool pool = ConnectionPool.getInstance();
-		Connection connection = pool.getConnection();
-		PreparedStatement pstmt = null;
-
-		try {
-			pstmt = connection.prepareStatement(sql);
-			pstmt.setString(1, username);
-			pstmt.setString(2, role);
-			return pstmt.executeUpdate();
-		} catch (SQLException e) {
 			System.out.println(e);
 			return 0;
 		} finally { 
@@ -510,8 +567,8 @@ public class DatabaseSchemas {
 	}
 	
 	/**
-	 * Update course fields in Courses
-	 * Delete course by setting courseStatus field = (0 or false)
+	 * Update Course fields in Courses
+	 * Delete Course by setting courseStatus field = (0 or false)
 	 * @return Number of affected rows
 	 * @throws SQLException
 	 */
@@ -525,6 +582,7 @@ public class DatabaseSchemas {
 		try {
 			String status = selectStatus.get(0);
 			boolean courseStatus = Boolean.parseBoolean(status);
+			setCourseStatus(courseStatus);
 			
 			String id = selectCourse.get(0).substring(0, 4);
 			int course_id = Integer.parseUnsignedInt(id);
@@ -534,6 +592,35 @@ public class DatabaseSchemas {
     		pstmt.setString(1, courseName);
     		pstmt.setBoolean(2, courseStatus);
     		pstmt.setInt(3, course_id);
+			return pstmt.executeUpdate();
+		} catch (SQLException e) {
+			System.out.println(e);
+			return 0;
+		} finally { 
+			DatabaseUtility.closePreparedStatement(pstmt);
+			pool.freeConnection(connection);
+		}
+	}
+	
+	/**
+	 * Update Course assignment status in Instructor and Student Courses
+	 * Delete Course assigned to Instructors and Students by setting assignStatus field = (0 or false)
+	 * @return Number of affected rows
+	 * @throws SQLException
+	 */
+	public static int updateCourseAssignmentStatus(String sql) throws SQLException {
+
+		ConnectionPool pool = ConnectionPool.getInstance();
+		Connection connection = pool.getConnection();
+		PreparedStatement pstmt = null;
+
+		try {
+			boolean assignStatus = isCourseStatus();
+			int course_idToUpdate = getCourse_id();
+			
+			pstmt = connection.prepareStatement(sql);
+    		pstmt.setBoolean(1, assignStatus);
+    		pstmt.setInt(2, course_idToUpdate);
 			return pstmt.executeUpdate();
 		} catch (SQLException e) {
 			System.out.println(e);

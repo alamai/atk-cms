@@ -26,7 +26,7 @@ public class StudentAccount extends Account {
 	 * @return All courses Student is taking
 	 * @throws SQLException 
 	 */
-	public ArrayList<String> getCourses() throws SQLException {
+	public ArrayList<String> studentCourses() throws SQLException {
 	
 		ConnectionPool pool = ConnectionPool.getInstance();
 		Connection connection = pool.getConnection();

@@ -18,7 +18,7 @@
 			 			border="1"
 			 			cellpadding="5"
 			 			style="text-align:left"
-			 			value="#{course.getCoursesFromCourses()}">
+			 			value="#{course.coursesFromCourses()}">
 			 			
 			    		<h:column>
 			    			<f:facet name="header">Course Name
@@ -43,7 +43,7 @@
 			 			border="1"
 			 			cellpadding="5"
 			 			style="text-align:left"
-			 			value="#{course.getInstructorCourses()}">
+			 			value="#{course.instructorCourses()}">
 			 			
 			    		<h:column>
 			    			<f:facet name="header">User ID
@@ -68,7 +68,7 @@
 			 			border="1"
 			 			cellpadding="5"
 			 			style="text-align:left"
-			 			value="#{course.getStudentCourses()}">
+			 			value="#{course.studentCourses()}">
 			 			
 			    		<h:column>
 			    			<f:facet name="header">User ID
@@ -93,7 +93,8 @@
     			<h:form>
     			
 		    		<p><b>Assign Courses to Instructors and Students.</b></p>
-		    		<p>Reference course tables on the left side when assigning courses.</p>
+		    		<p>Reference course tables on the left side when assigning courses.<br/> 
+					Be careful to <b><font color="red">avoid duplicate</font></b> course assignments.</p>
 					<ul>
 						<li><p><u><font color="blue">Select one (1) Course</font></u> only.</p></li>
 	        			<li><p><u><font color="blue">Select one (1) Instructor</font></u> and <u><font color="blue"> 2 - 25 Students</font></u> only.</p></li>
@@ -148,7 +149,7 @@
 		            <br/>
 		            <h:commandButton 
 		            	value="SUBMIT" 
-		            	action="#{course.assignCourseProcess()}"/>
+		            	action="#{course.courseAssignmentProcess()}"/>
     			
     			</h:form>
     		</ui:define>

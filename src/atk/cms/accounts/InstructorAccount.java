@@ -10,11 +10,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.ArrayList;
 import javax.servlet.http.Part;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.event.ValueChangeEvent;
+import atk.cms.courses.FileDownloadUtility;
 import atk.cms.courses.FileUploadUtility;
 import atk.cms.database.ConnectionPool;
 import atk.cms.database.DatabaseSchemas;
@@ -25,22 +27,34 @@ import atk.cms.database.DatabaseUtility;
 @SessionScoped
 public class InstructorAccount extends Account {
 	
+	private String selectedCourse;
+	private String selectedStudent;
 	private Part testFile;
 	private Part homeworkFile;
 	private int homeworkNumber;
-	private String selectedCourse;
 	private ArrayList<String> instructorCoursesList;
-	private ArrayList<String> instructorStudentsList;
-	
-	private String folderPathTests = System.getProperty("user.home") + File.separator + "Desktop" + File.separator 
-    		+ "CMSFiles" + File.separator + "AssignedTests" + File.separator + selectedCourse;
-	
-	private String folderPathHomework = System.getProperty("user.home") + File.separator + "Desktop" + File.separator 
-    		+ "CMSFiles" + File.separator + "AssignedHomework" + File.separator + selectedCourse;
+	private ArrayList<Integer> instructorStudentsList;
+	private List<Account> instructorStudentsAccountsTable;
 	
 	public InstructorAccount() throws SQLException {
-		getInstructorCourses();
-		getInstructorStudents();
+		instructorCourses();
+		instructorStudents();
+	}
+	
+	public void setSelectedCourse(String selectedCourse) {
+		this.selectedCourse = selectedCourse;
+	}
+
+	public String getSelectedCourse() {
+		return selectedCourse;
+	}
+
+	public void setSelectedStudent(String selectedStudent) {
+		this.selectedStudent = selectedStudent;
+	}
+
+	public String getSelectedStudent() {
+		return selectedStudent;
 	}
 
 	public void setTestFile(Part testFile) {
@@ -58,14 +72,6 @@ public class InstructorAccount extends Account {
 	public Part getHomeworkFile() {
 		return homeworkFile;
 	}
-
-	public void setSelectedCourse(String selectedCourse) {
-		this.selectedCourse = selectedCourse;
-	}
-
-	public String getSelectedCourse() {
-		return selectedCourse;
-	}
 	
 	public void setInstructorCoursesList(ArrayList<String> instructorCoursesList) {
 		this.instructorCoursesList = instructorCoursesList;
@@ -75,25 +81,47 @@ public class InstructorAccount extends Account {
 		return instructorCoursesList;
 	}
 	
-	public void setInstructorStudentsList(ArrayList<String> instructorStudentsList) {
+	public void setInstructorStudentsList(ArrayList<Integer> instructorStudentsList) {
 		this.instructorStudentsList = instructorStudentsList;
 	}
 	
-	public ArrayList<String> getInstructorStudentsList() {
+	public ArrayList<Integer> getInstructorStudentsList() {
 		return instructorStudentsList;
+	}
+
+	public void setInstructorStudentsAccountsTable(List<Account> instructorStudentsAccountsTable) {
+		this.instructorStudentsAccountsTable = instructorStudentsAccountsTable;
+	}
+	
+	public List<Account> getInstructorStudentsAccountsTable() {
+		return instructorStudentsAccountsTable;
 	}
 	
 	public void instructorSelectedCourse(ValueChangeEvent e) {
-		selectedCourse = e.getNewValue().toString();
+		setSelectedCourse(e.getNewValue().toString());
+	}
+
+	public void instructorSelectedStudent(ValueChangeEvent e) {
+		setSelectedStudent(e.getNewValue().toString());
 	}
 	
 	public String instructorCoursePage() {
-				
+		
 		if (!selectedCourse.equals("courselist")) { 
 			return "/Instructor/CoursePage.xhtml";
 		}
 		else { 
 			return "/Instructor/LandingPage.xhtml";
+		}
+	}
+	
+	public String assignGradesPage() {
+		
+		if (!selectedStudent.equals("studentlist")) { 
+			return "/Instructor/AssignGradesPage.xhtml";
+		}
+		else { 
+			return "/Instructor/CoursePage.xhtml";
 		}
 	}
 
@@ -102,18 +130,19 @@ public class InstructorAccount extends Account {
 	 * @return instructorCoursesList
 	 * @throws SQLException 
 	 */
-	private ArrayList<String> getInstructorCourses() throws SQLException {
+	public ArrayList<String> instructorCourses() throws SQLException {
 		
-		String sqljoin = "select Courses.course_id, Courses.coursename, InstructorCourses.user_id "
+		String sqljoin = "select distinct Courses.course_id, Courses.coursename, InstructorCourses.user_id "
 				+ "from Courses "
-				+ "inner join InstructorCourses "
+				+ "join InstructorCourses "
 				+ "on Courses.course_id = InstructorCourses.course_id "
 				+ "where Courses.coursestatus = 1 "
 				+ "and InstructorCourses.assignstatus = 1 "
 				+ "and InstructorCourses.user_id = ?";
 		
 		user_id = DatabaseSchemas.getUser_id();
-		return instructorCoursesList = DatabaseSchemas.getUserCoursesInfo(sqljoin, user_id, instructorCoursesList);
+		return instructorCoursesList = 
+				DatabaseSchemas.userCoursesInfo(sqljoin, user_id, instructorCoursesList);
 	}
 	
 	/**
@@ -121,30 +150,109 @@ public class InstructorAccount extends Account {
 	 * @return instructorStudentsList
 	 * @throws SQLException
 	 */
-	private ArrayList<String> getInstructorStudents() throws SQLException {
+	public ArrayList<Integer> instructorStudents() throws SQLException {
 		
-		String sqljoin = "select Courses.course_id, Courses.coursename, InstructorCourses.user_id, UserAccounts.username "
-				+ "from Courses, InstructorCourses, UserAccounts "
-				+ "where Courses.course_id = InstructorCourses.course_id "
-				+ "and UserAccounts.user_id = InstructorCourses.user_id "
-				+ "and Courses.coursestatus = 1 "
+		String sqljoin = "select distinct StudentCourses.user_id, Courses.course_id "
+				+ "from StudentCourses "
+				+ "join Courses "
+				+ "on Courses.course_id = StudentCourses.course_id "
+				+ "join InstructorCourses "
+				+ "on InstructorCourses.course_id = StudentCourses.course_id "
+				+ "where StudentCourses.assignstatus = 1 "
 				+ "and InstructorCourses.assignstatus = 1 "
-				+ "and UserAccounts.user_id = ?";
+				+ "and InstructorCourses.user_id = ? "
+				+ "and Courses.coursename = ?";
 		
 		user_id = DatabaseSchemas.getUser_id();
-		return instructorStudentsList = DatabaseSchemas.getUserCoursesInfo(sqljoin, user_id, instructorStudentsList);
+		return instructorStudentsList = 
+				DatabaseSchemas.studentsIdListFromCourses(sqljoin, user_id, selectedCourse, instructorStudentsList);
+	}
+	
+	/**
+	 * Get Students Instructor is teaching in table
+	 * @return instructorStudentsAccountsTable
+	 * @throws SQLException
+	 */
+	public List<Account> instructorStudentsTable() throws SQLException {
+		
+		String sqljoin = "select distinct UserAccounts.firstname, UserAccounts.lastname, UserAccounts.user_id, Courses.coursename "
+				+ "from UserAccounts "
+				+ "join Courses "
+				+ "join StudentCourses "
+				+ "on UserAccounts.user_id = StudentCourses.user_id "
+				+ "join InstructorCourses "
+				+ "on InstructorCourses.course_id = StudentCourses.course_id "
+				+ "where StudentCourses.assignstatus = 1 "
+				+ "and InstructorCourses.assignstatus = 1 "
+				+ "and InstructorCourses.user_id = ? "
+				+ "and Courses.coursename = ?";
+		
+		user_id = DatabaseSchemas.getUser_id();
+		return instructorStudentsAccountsTable = 
+				DatabaseSchemas.studentsInCourse(sqljoin, user_id, selectedCourse, instructorStudentsAccountsTable);
 	}
 	
 	public String uploadTestFile() throws IOException {
-		
-		FileUploadUtility.uploadCourseFile(testFile, folderPathTests);
-		return "/Instructor/CoursePage.xhtml";
+
+		if (testFile.getSize() > 1) {
+			
+			String folderPathTests = System.getProperty("user.home") + File.separator + "Desktop" + File.separator 
+					+ "CMSFiles" + File.separator + "AssignedTests" + File.separator + selectedCourse + File.separator;
+
+			FileUploadUtility.uploadCourseFile(testFile, folderPathTests);
+
+			File uploadedTestFile = new File(folderPathTests + FileUploadUtility.getFileName());
+
+			if (uploadedTestFile.exists()) {
+				return "/Instructor/CoursePageUploaded.xhtml";
+			}
+			else {
+				return "/Instructor/CoursePageError1-1.xhtml";
+			}
+		}
+		else {
+			return "/Instructor/CoursePageError2.xhtml";
+		}
 	}
 	
 	public String uploadHomeworkFile() throws IOException {
-		
-		FileUploadUtility.uploadCourseFile(homeworkFile, folderPathHomework);
-		return "/Instructor/CoursePage.xhtml";
+
+		if (homeworkFile.getSize() > 1) {
+			
+			String folderPathHomework = System.getProperty("user.home") + File.separator + "Desktop" + File.separator 
+					+ "CMSFiles" + File.separator + "AssignedHomework" + File.separator + selectedCourse + File.separator;
+
+			FileUploadUtility.uploadCourseFile(homeworkFile, folderPathHomework);
+
+			File uploadedHomeworkFile = new File(folderPathHomework + FileUploadUtility.getFileName());
+
+			if (uploadedHomeworkFile.exists()) {
+				return "/Instructor/CoursePageUploaded.xhtml";
+			}
+			else {
+				return "/Instructor/CoursePageError1-2.xhtml";
+			}
+		}
+		else {
+			return "/Instructor/CoursePageError3.xhtml";
+		}
+	}
+	
+	public String downloadTestsTemplate() throws IOException {
+
+		String folderPathTestsTemplate = System.getProperty("user.home") + File.separator + "Desktop" + File.separator 
+				+ "CMSFiles" + File.separator + "TestsTemplate" + File.separator + "tests-template.xml";
+
+		File testsTemplate = new File(folderPathTestsTemplate);
+
+		if (testsTemplate.exists()) {
+
+			FileDownloadUtility.downloadFile(folderPathTestsTemplate);
+			return "/Instructor/CoursePageTemplate.xhtml";
+		}
+		else {
+			return "/Instructor/CoursePageError4.xhtml";
+		}
 	}
 
 	/**
@@ -156,8 +264,8 @@ public class InstructorAccount extends Account {
 	 */
 	public void assignHomework(String course, String assignedHomework) throws IOException, SQLException {
 		
-		homeworkNumber = getHomeworkAmount(course);
-		setHomeworkAmount(course, ++homeworkNumber);
+		homeworkNumber = checkHomeworkAmount(course);
+		updateHomeworkAmount(course, ++homeworkNumber);
 		addHomeworkToHomework(course);
 		Writer output = null;
 		File file = new File(System.getProperty("user.home") + File.separator + "Desktop" + File.separator + "CMSFiles" 
@@ -173,16 +281,15 @@ public class InstructorAccount extends Account {
 	}
 
 	/**
-	 * Append homework assignment to course table
-	 * @param Course to add homework to = "course"
+	 * Append Homework to Homework table
 	 * @throws SQLException 
 	 */
-	private void addHomeworkToHomework(String course) throws SQLException {
+	private void addHomeworkToHomework(String courseName) throws SQLException {
 
 		ConnectionPool pool = ConnectionPool.getInstance();
 		Connection connection = pool.getConnection();
 		PreparedStatement pstmt = null;
-		String sql = "alter table " + course + " add Hw" + homeworkNumber + " int";
+		String sql = "alter table " + courseName + " add Hw" + homeworkNumber + " int";
 
 		try {
 			pstmt = connection.prepareStatement(sql);
@@ -196,18 +303,16 @@ public class InstructorAccount extends Account {
 	}
 
 	/**
-	 * Set total amount of homework for course
-	 * @param Course to set amount of homework for = "course"
-	 * @param Amount of homework assigned = "numberOfHw"
+	 * Set total amount of Homework for course
 	 * @throws SQLException 
 	 */
-	private void setHomeworkAmount(String course, int numberOfHw) throws SQLException {
+	private void updateHomeworkAmount(String courseName, int numberOfHw) throws SQLException {
 	
 		ConnectionPool pool = ConnectionPool.getInstance();
 		Connection connection = pool.getConnection();
 		PreparedStatement pstmt = null;		
 		String sql = "update courses set numHw = " + Integer.toString(numberOfHw) 
-				+ " where coursename = \'" + course + "\'";
+				+ " where coursename = \'" + courseName + "\'";
 		try {
 			pstmt = connection.prepareStatement(sql);
 			pstmt.executeUpdate();
@@ -220,19 +325,18 @@ public class InstructorAccount extends Account {
 	}
 
 	/**
-	 * Get total amount of homework for course
-	 * @param Course to find total amount of homework for = "course"
-	 * @return Total amount of homework
+	 * Get total amount of Homework for course
+	 * @return Total amount of Homework
 	 * @throws SQLException 
 	 */
-	public int getHomeworkAmount(String course) throws SQLException {
+	public int checkHomeworkAmount(String courseName) throws SQLException {
 
 		int ret = 0;
 		ConnectionPool pool = ConnectionPool.getInstance();
 		Connection connection = pool.getConnection();
 		PreparedStatement pstmt = null;	
 		ResultSet rs = null;
-		String sql = "select numHw from courses where coursename = \'" + course + "\'";
+		String sql = "select numHw from courses where coursename = \'" + courseName + "\'";
 
 		try {
 			pstmt = connection.prepareStatement(sql);
@@ -252,20 +356,16 @@ public class InstructorAccount extends Account {
 	}
 
 	/**
-	 * Set Student grade for specific homework assignment
-	 * @param Student to look for = "student"
-	 * @param Course enrolled in = "course"
-	 * @param Homework number = "hw"
-	 * @param Grade for homework = "grade"
+	 * Set Student grade for specific Homework
 	 * @throws SQLException 
 	 */
-	public void gradeHomework(String student, String course, String hw, String grade) throws SQLException {
+	public void gradeHomework(int user_id, String courseName, String hw, String grade) throws SQLException {
 
 		ConnectionPool pool = ConnectionPool.getInstance();
 		Connection connection = pool.getConnection();
 		PreparedStatement pstmt = null;	
-		String sql = "update " + course + "course set " + hw + " = \'" + grade 
-				+ "\' where studentusername = \'" + student + "\'";
+		String sql = "update " + courseName + "course set " + hw + " = \'" + grade 
+				+ "\' where user_id = \'" + user_id + "\'";
 		try {
 			pstmt = connection.prepareStatement(sql);
 			pstmt.executeUpdate();

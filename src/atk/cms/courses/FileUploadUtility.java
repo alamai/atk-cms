@@ -1,37 +1,49 @@
 package atk.cms.courses;
 
 import java.io.IOException;
+import javax.servlet.http.Part;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.servlet.http.Part;
 
+/**
+ * The Part interface gets header information of each file sent by browser
+ * The file name and other meta information is contained in the header
+ * @param filePart 
+ * @return fileName
+ */
 @ManagedBean(name="fileUpload")
 @SessionScoped
 public class FileUploadUtility {
     
-	public static void uploadCourseFile(Part courseFile, String folderPath) throws IOException {
-    	courseFile.write(folderPath + getCourseFileName(courseFile));
-    }
+	private static String fileName;
 
-    /**
-     * The Part interface gets header information of each file sent by browser
-     * The file name and other meta information is contained in the header
-     * @param part 
-     * @return filename
-     */
-    private static String getCourseFileName(Part part) {
+	public static String setFileName(String fileName) {
+		FileUploadUtility.fileName = fileName;
+		return fileName;
+	}
+	
+	public static String getFileName() {
+		return fileName;
+	}
+	
+	public static void uploadCourseFile(Part courseFile, String folderPath) throws IOException {
+		courseFile.write(folderPath + getCourseFileName(courseFile));
+    }
+	
+	public static String getCourseFileName(Part filePart) {
         
-    	for (String cd : part.getHeader("content-disposition").split(";")) {
+    	String header = filePart.getHeader("content-disposition");
+        
+    	if (header == null) {
+    		return null;
+    	}
+    	
+        for (String headerPart : header.split(";")) {
             
-    		if (cd.trim().startsWith("filename")) {
-    			
-                String filename = cd.substring(cd.indexOf('=') + 1).trim().replace("\"", "");
-                return filename.substring(filename.lastIndexOf('/') + 1).substring(filename.lastIndexOf('\\') + 1);
+        	if (headerPart.trim().startsWith("filename")) {
+        		return fileName = (headerPart.substring(headerPart.indexOf('=') + 1).trim().replace("\"", ""));
             }
-    		else {
-    			return null;
-    		}
         }
-		return null;
+        return null;
     }
 }

@@ -40,10 +40,10 @@ public class Course {
 	private ArrayList<String> courseidList;
 
 	public Course() throws SQLException {
-		getActiveCoursesFromCourses();
-		getInstructorsListFromUserAccounts();
-		getStudentsListFromUserAccounts();
-		getCoursesCourses();
+		activeCoursesFromCourses();
+		instructorsListFromUserAccounts();
+		studentsListFromUserAccounts();
+		coursesCourses();
 	}
 	
 	public void setCourse_id(int course_id) {
@@ -203,7 +203,7 @@ public class Course {
 	 * @return coursesList
 	 * @throws SQLException
 	 */
-	public List<Course> getCoursesFromCourses() throws SQLException {
+	public List<Course> coursesFromCourses() throws SQLException {
 
 		ConnectionPool pool = ConnectionPool.getInstance();
 		Connection connection = pool.getConnection();
@@ -239,7 +239,7 @@ public class Course {
 	 * @return instructorCoursesList
 	 * @throws SQLException
 	 */
-	public List<Course> getInstructorCourses() throws SQLException {
+	public List<Course> instructorCourses() throws SQLException {
 	
 		ConnectionPool pool = ConnectionPool.getInstance();
 		Connection connection = pool.getConnection();
@@ -275,7 +275,7 @@ public class Course {
 	 * @return instructorCoursesList
 	 * @throws SQLException
 	 */
-	public List<Course> getStudentCourses() throws SQLException {
+	public List<Course> studentCourses() throws SQLException {
 	
 		ConnectionPool pool = ConnectionPool.getInstance();
 		Connection connection = pool.getConnection();
@@ -311,10 +311,10 @@ public class Course {
 	 * @return activeCoursesList
 	 * @throws SQLException
 	 */
-	private ArrayList<String> getActiveCoursesFromCourses() throws SQLException {
+	private ArrayList<String> activeCoursesFromCourses() throws SQLException {
 
 		String sql = "select course_id, coursename from Courses where courseStatus = 1";
-		return activeCoursesList = DatabaseSchemas.getIdListFromTable(sql, activeCoursesList);
+		return activeCoursesList = DatabaseSchemas.idListFromTable(sql, activeCoursesList);
 	}
 	
 	/**
@@ -322,10 +322,10 @@ public class Course {
 	 * @return instructorsList
 	 * @throws SQLException
 	 */
-	private ArrayList<String> getInstructorsListFromUserAccounts() throws SQLException {
+	private ArrayList<String> instructorsListFromUserAccounts() throws SQLException {
 
 		String sql = "select user_id, username from UserAccounts where accountStatus = 1 and role = 'instructor'";
-		return instructorsList = DatabaseSchemas.getIdListFromTable(sql, instructorsList);
+		return instructorsList = DatabaseSchemas.idListFromTable(sql, instructorsList);
 	}
 
 	/**
@@ -333,10 +333,10 @@ public class Course {
 	 * @return studentsList
 	 * @throws SQLException
 	 */
-	private ArrayList<String> getStudentsListFromUserAccounts() throws SQLException {
+	private ArrayList<String> studentsListFromUserAccounts() throws SQLException {
 
 		String sql = "select user_id, username from UserAccounts where accountStatus = 1 and role = 'student'";
-		return studentsList = DatabaseSchemas.getIdListFromTable(sql, studentsList);
+		return studentsList = DatabaseSchemas.idListFromTable(sql, studentsList);
 	}
 	
 	/**
@@ -344,10 +344,10 @@ public class Course {
 	 * @return courseidList
 	 * @throws SQLException
 	 */
-	private ArrayList<String> getCoursesCourses() throws SQLException {
+	private ArrayList<String> coursesCourses() throws SQLException {
 		
 		String sql = "select course_id, coursename from Courses order by course_id";
-		return courseidList = DatabaseSchemas.getIdListFromTable(sql, courseidList);
+		return courseidList = DatabaseSchemas.idListFromTable(sql, courseidList);
 	}
 	
 	/**
@@ -392,13 +392,13 @@ public class Course {
 	 * @return Go-to web page
 	 * @throws SQLException 
 	 */
-	public String assignCourseProcess() throws SQLException { 
+	public String courseAssignmentProcess() throws SQLException { 
 				
 		String sql1 = "insert into InstructorCourses (user_id, course_id, assignstatus) values (?, ?, 1)";
 		String sql2 = "insert into StudentCourses (user_id, course_id, assignstatus) values (?, ?, 1)";
 		String sql3 = "insert into CourseGradebook (user_id, course_id) values (?, ?)";
 		
-		if (noRoleConflict(selectInstructor, selectStudents) && noAssignmentConflict()) {
+		if (noRoleConflict(selectInstructor, selectStudents)) {
 								
 			if ((selectCourse.size() == 1) && (selectInstructor.size() == 1) && (selectStudents.size() >= 2) 
 					&& (selectStudents.size() <= 25)) {
@@ -443,7 +443,7 @@ public class Course {
 		return true;
 	}
 	
-	private boolean noAssignmentConflict() throws SQLException {
+	public boolean noAssignmentConflict() throws SQLException {
 		
 		String sql1 = "select * from InstructorCourses where user_id = ? and course_id = ?";
 		String sql2 = "select * from StudentCourses where user_id = ? and course_id = ?";
@@ -523,11 +523,17 @@ public class Course {
 
 		String sql1 = "update Courses set coursename = ?, coursestatus = ? where course_id = ?";
 		
+		String sql2 = "update InstructorCourses set assignstatus = ? where course_id = ?";
+		
+		String sql3 = "update StudentCourses set assignstatus = ? where course_id = ?";
+		
 		if (selectStatus.size() == 1 && selectCourse.size() == 1) {
 
-			int rowsUpdated = DatabaseSchemas.updateCourseInCourses(sql1, this.courseName, selectStatus, selectCourse);
+			int rowsUpdated1 = DatabaseSchemas.updateCourseInCourses(sql1, this.courseName, selectStatus, selectCourse);
+			int rowsUpdated2 = DatabaseSchemas.updateCourseAssignmentStatus(sql2);
+			int rowsUpdated3 = DatabaseSchemas.updateCourseAssignmentStatus(sql3);
 
-			if (rowsUpdated == 1) {
+			if ((rowsUpdated1 == 1) && (rowsUpdated2 == 1) && (rowsUpdated3 >= 1)) {
 				return "/Course/EditedPage";
 			}
 			else {

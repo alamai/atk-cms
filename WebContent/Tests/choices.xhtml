@@ -10,7 +10,7 @@
 			columns="2">
 						
 			<h:selectOneRadio 
-				value="#{wizard.selectAnswers}"
+				value="#{wizard.questionsList[wizard.questionNumber].answer}"
 				layout="pageDirection">
 				<f:selectItems value="#{wizard.questionsList[wizard.questionNumber].questionChoices}"/>
 				<f:ajax render=":buttons"/>
